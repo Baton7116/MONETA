@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кәмпит Интерфейсі</title>
+    <style>
+        /* Негізгі стильдер */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+        }
+
+        /* Ұшып бара жатқан жұлдыздардың фоны */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            animation: fly 3s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes fly {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(100vh) translateX(50vw);
+                opacity: 0;
+            }
+        }
+
+        /* Есептеу және Silver жазуы */
+        .top-display {
+            position: absolute;
+            top: 20px;
+            text-align: center;
+            z-index: 1;
+        }
+        .coin-count {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .tier {
+            font-size: 1em;
+            color: #dcdcdc;
+            margin-top: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Негізгі кәмпит және +1 анимациясы */
+        .big-candy {
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease;
+            z-index: 1;
+            background-color: transparent;
+            animation: bounce 0.5s ease;
+        }
+
+        .big-candy img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .plus-one {
+            position: absolute;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: yellow;
+            animation: moveUp 1s ease-out;
+            opacity: 0;
+        }
+
+        @keyframes moveUp {
+            0% {opacity: 1;}
+            100% {opacity: 0; transform: translateY(-40px);}
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Толық экрандық сурет */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('1.jpg') no-repeat center center;
+            background-size: cover;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <!-- Ұшып бара жатқан жұлдыздар -->
+    <div class="stars">
+        <!-- 50 жұлдыз қосу -->
+        <script>
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement("div");
+                star.className = "star";
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                star.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                document.body.appendChild(star);
+            }
+        </script>
+    </div>
+
+    <!-- Клик саны және Silver жазуы -->
+    <div class="top-display" id="top-display">
+        <p class="coin-count" id="coin-count">0 🍬</p>
+        <div class="tier" id="tier">WELCOME</div>
+    </div>
+
+    <!-- Негізгі кәмпит -->
+    <div class="big-candy" onclick="increaseCoins()">
+        <img src="coins.png" alt="Coins">
+        <div class="plus-one" id="plus-one">+1</div>
+    </div>
+
+    <!-- Толық экрандық сурет -->
+    <div id="overlay"></div>
+
+    <script>
+        let coins = 0;
+
+        function increaseCoins() {
+            coins += 1;
+            document.getElementById('coin-count').textContent = coins + " 🍬";
+
+            // +1 белгісін кездейсоқ орналастыру
+            const plusOne = document.getElementById('plus-one');
+            const randomX = Math.floor(Math.random() * 100 - 50);
+            const randomY = Math.floor(Math.random() * 100 - 50);
+            plusOne.style.left = `${50 + randomX}%`;
+            plusOne.style.top = `${50 + randomY}%`;
+            
+            plusOne.style.opacity = 1;
+            plusOne.style.animation = 'none';
+            setTimeout(() => {
+                plusOne.style.animation = '';
+            }, 10);
+
+            // Кәмпит басылғанда анимация қосу
+            document.querySelector(".big-candy").style.animation = 'bounce 0.5s ease';
+
+            // Клик саны 50-ге жеткенде толық экрандық сурет көрсету
+            if (coins >= 50) {
+                showOverlay();
+            }
+        }
+
+        function showOverlay() {
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("top-display").style.display = "none";
+            document.querySelector(".big-candy").style.display = "none";
+        }
+    </script>
+</body>
+</html>
